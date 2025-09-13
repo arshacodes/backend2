@@ -13,40 +13,40 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-        
+
         $validator = Validator::make($request->all(), [
-            'firstname' => 'required|string|max:50',
-            'lastname' => 'required|string|max:50',
-            'section' => 'required|string|max:10',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => 'required'
+            'firstname' => ['required', 'string', 'max:50'],
+            'lastname' => ['required', 'string', 'max:50'],
+            'section' => ['required', 'string', 'max:10'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required']
         ]);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
 
-            return response()->json([
+            return response()->json(data: [
                 'success' => false,
-                'errors' => $errors
-            ], 422);
+                'errors' => $errors,
+            ], status: 422);
         }
 
-        $firstname = $request->firstname;
-        $lastname = $request->lastname;
+        $FirstName = $request->firstname;
+        $LastName = $request->lastname;
         $section = $request->section;
         $email = $request->email;
         $password = $request->password;
 
         $result  = User::create([
-            'firstname' => $firstname,
-            'lastname' => $lastname,
+            'firstname' => $FirstName,
+            'lastname' => $LastName,
             'section' => $section,
             'email' => $email,
             'password' => Hash::make($password),
         ]);
 
-        return response()->json([
-            'result' => $result
-        ], Response::HTTP_CREATED);
+        return response([
+            'result' => $result,
+        ], status: Response::HTTP_CREATED);
     }
 }
