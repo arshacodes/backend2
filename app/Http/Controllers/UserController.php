@@ -39,6 +39,11 @@ class UserController extends Controller
         //     'password' => 'required|string|min:8|confirmed',
         // ]);
 
+        $firstname = $request->firstname;
+        $lastname = $request->lastname;
+        $email = $request->email;
+        $password = $request->password;
+
         // Create a new user
         $user = \App\Models\User::create([
             'firstname' => $validatedData['firstname'],
