@@ -17,12 +17,12 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
+            'section' => 'required|string|max:10',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => 'required',
+            'password' => 'required'
         ]);
 
         if ($validator->fails()) {
-            // return response()->json(['errors' => $validator->errors()], 422);
             $errors = $validator->errors();
 
             return response()->json([
@@ -31,28 +31,22 @@ class UserController extends Controller
             ], 422);
         }
 
-        // Validate the request data
-        // $validatedData = $request->validate([
-        //     'firstname' => 'required|string|max:50',
-        //     'lastname' => 'required|string|max:50',
-        //     'email' => 'required|string|email|max:50|unique:users',
-        //     'password' => 'required|string|min:8|confirmed',
-        // ]);
-
         $firstname = $request->firstname;
         $lastname = $request->lastname;
+        $section = $request->section;
         $email = $request->email;
         $password = $request->password;
 
-        // Create a new user
-        $user = \App\Models\User::create([
-            'firstname' => $validatedData['firstname'],
-            'lastname' => $validatedData['lastname'],
-            'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']),
+        $result  = User::create([
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'section' => $section,
+            'email' => $email,
+            'password' => Hash::make($password),
         ]);
 
-        // Return a response
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        return response()->json([
+            'result' => $result
+        ], Response::HTTP_CREATED);
     }
 }
